@@ -1,0 +1,99 @@
+options {
+	STATIC = false;
+}
+
+PARSER_BEGIN(OperationParser)
+
+	package com.cesar31.operation.parser;
+	import com.cesar31.operation.ast.*;
+
+	public class OperationParser {
+	}
+
+PARSER_END(OperationParser)
+
+/* Ignore */
+SKIP : { " " | "\n" | "\t" | "\r" | "\r\n" }
+TOKEN : { < PLUS : "+" > }
+TOKEN : { < TIMES : "*" > }
+TOKEN : { < NUM : "0" | ["1"-"9"](["0"-"9"])* > }
+TOKEN : { < LPAREN : "(" > }
+TOKEN : { < RPAREN : ")" > }
+
+/* Root production */
+public Operation Start() :
+{
+	Operation op;
+}
+{
+	op = E() <EOF>
+	{ return op; }
+}
+
+// E -> TE'
+Operation E() :
+{
+	Operation op;
+}
+{
+	op = T()
+	op = Ep(op)
+	{ return op; }
+}
+
+// E' -> +TE' | lambda
+Operation Ep(Operation Ep_i) :
+{
+	Operation op;
+}
+{
+		<PLUS>
+		op = T()
+		{ op = new Operation("+", Ep_i, op); }
+		op = Ep(op)
+		{ return op; }
+	|
+		/* lambda */
+		{ return Ep_i; }
+}
+
+// T -> FT'
+Operation T() :
+{
+	Operation op;
+}
+{
+	op = F()
+	op = Tp(op)
+	{ return op; }
+}
+
+// T' -> *FT' | lambda
+Operation Tp(Operation Tp_i) :
+{
+	Operation op;
+}
+{
+		<TIMES>
+		op = F()
+		{ op = new Operation("*", Tp_i, op); }
+		op = Tp(op)
+		{ return op; }
+	|
+		/* lambda */
+		{ return Tp_i; }
+}
+
+// F-> NUM | (E)
+Operation F() :
+{
+	Token t;
+	Operation op;
+}
+{
+		t = <NUM>
+		{ return new Operation("NUM", Integer.parseInt(t.image)); }
+	|
+		<LPAREN> op = E() <RPAREN>
+		{ return op; }
+}

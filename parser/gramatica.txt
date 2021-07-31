@@ -1,0 +1,28 @@
+Usando la siguiente gramatica generar un esquema de traduccion que cree y dibuje un arbol de sintaxis abstracta que represente la precedencia de las operaciones de la cadena de entrada.
+
+Una vez creado el arbol de sintaxis abstracta, recorrerlo en postorden para que se puedan imprimir las operaciones en notacion postfija.
+
+// *.i => atributos heredados
+// *.val => atributos sintetizados
+
+E -> 	T					{ E'.i = T.val; }
+			E'				{ E.val = E'.val; }
+
+E'1->	+
+			T					{ E'2.i =  E'1.i + T.val; }
+			E'2				{ E'1.val = E'2.val; }
+
+E'-> lambda			{ E'.val = E'.i; }
+
+T ->	F					{ T'.i = F.val; }
+			T'				{ T.val = T'.val; }
+
+T'1 ->	*
+			F					{ T'2.i = T'1.i * F.val; }
+			T'2				{ T'1.val = T'2.val; }
+
+T' ->	lambda		{ T'.val = T'.i; }
+
+F -> NUM				{ F.val = NUM.val; }
+
+F -> ( E )			{ F.val = E.val; }
