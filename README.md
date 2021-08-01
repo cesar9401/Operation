@@ -6,3 +6,10 @@ or
 ```sh
 java -jar Operation.jar
 ```
+
+
+
+Requisitos:
+
+Tener instalado graphviz (https://graphviz.org/).
+
