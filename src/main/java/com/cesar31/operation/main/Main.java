@@ -16,10 +16,10 @@ import java.util.*;
 public class Main {
 
     public static void main(String[] args) {
-        // String in = "10 + 2 * 1 + 4";
-        // StringReader reader = new StringReader(in);
-        // OperationParser parser = new OperationParser(reader);
-        OperationParser parser = new OperationParser(System.in);
+        String in = "10 + 2 * 1 + 4";
+        StringReader reader = new StringReader(in);
+        OperationParser parser = new OperationParser(reader);
+        // OperationParser parser = new OperationParser(System.in);
         Operation ast;
         try {
             ast = parser.Start();
